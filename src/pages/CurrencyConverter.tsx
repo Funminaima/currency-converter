@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getExchangeRates, getSupportedCodes } from "../api/api";
 import Converter from "../components/Converter";
 import { IExchangeRates, IHistory } from "../type.d";
@@ -11,6 +11,7 @@ const CurrencyConverter = () => {
   const [selectedFromCurrency, setSelectedFromCurrency] = useState("");
   const [selectedToCurrency, setSelectedToCurrency] = useState("");
   const [convertedAmt, setConvertedAmt] = useState<number>();
+  const userAmtRef = useRef(userAmt);
 
   const convertToObject = (codes: []) => {
     return codes.map((innerArray) => {
@@ -56,6 +57,7 @@ const CurrencyConverter = () => {
 
     fetchExchangeRates();
   }, [selectedFromCurrency]);
+
   const onChangeInputField = (e: React.ChangeEvent<HTMLInputElement>) => {
     setuserAmt(e.target.value);
   };
@@ -68,29 +70,45 @@ const CurrencyConverter = () => {
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setSelectedToCurrency(e.target.value);
-    handleConversion(userAmt, selectedFromCurrency, e.target.value);
+    // handleConversion(userAmt, selectedFromCurrency, e.target.value);
   };
   useEffect(() => {
     if (exchangeRates) {
-      //   const convertedAmount =
-      //     (parseFloat(userAmt) / exchangeRates[selectedFromCurrency]) *
-      //     exchangeRates[selectedToCurrency];
-      //   setConvertedAmt(convertedAmount);
-      //   console.log(convertedAmount, "convertedAmount in exchange");
       handleConversion(userAmt, selectedFromCurrency, selectedToCurrency);
     }
   }, [userAmt, selectedFromCurrency, selectedToCurrency]);
+
   useEffect(() => {
-    const conversionDetails = {
-      userAmt,
-      selectedFromCurrency,
-      selectedToCurrency,
-      convertedAmt,
-    };
-    if (userAmt !== "") {
-      setHistory([...history, conversionDetails]);
-    }
-  }, [selectedToCurrency]);
+    userAmtRef.current = userAmt;
+
+    const timeoutId = setTimeout(() => {
+      if (typeof convertedAmt === "number" && !isNaN(convertedAmt)) {
+        const conversionDetails = {
+          userAmt,
+          selectedFromCurrency,
+          selectedToCurrency,
+          convertedAmt,
+        };
+
+        setHistory((prevHistory: any) => [...prevHistory, conversionDetails]);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [convertedAmt]);
+  //   useEffect(() => {
+  //     if (typeof convertedAmt === "number" && !isNaN(convertedAmt)) {
+  //       const conversionDetails = {
+  //         userAmt,
+  //         selectedFromCurrency,
+  //         selectedToCurrency,
+  //         convertedAmt,
+  //       };
+  //       if (userAmt.trim() !== "") {
+  //         setHistory([...history, conversionDetails]);
+  //       }
+  //     }
+  //   }, [convertedAmt]);
   const onChangeConvertedAmount = (e: any) => {
     alert("hello");
     console.log("hello");
