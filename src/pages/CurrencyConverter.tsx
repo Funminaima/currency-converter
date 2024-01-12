@@ -92,7 +92,7 @@ const CurrencyConverter = () => {
     fromCurrency: string,
     ToCurrency: string
   ) => {
-    if (exchangeRates) {
+    if (exchangeRates && amt !== "") {
       const convertedAmount =
         (parseFloat(amt) / exchangeRates[fromCurrency]) *
         exchangeRates[ToCurrency];

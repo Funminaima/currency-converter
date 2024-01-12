@@ -11,8 +11,7 @@ const SupportedCurrency = ({ supportedCodes }: Props) => {
         supportedCodes.map((code: ICodes) => {
           return (
             <option value={code.currencyCode} key={code.currencyCode}>
-              {code.currencyCode}
-              {code.currencyName}
+              {code.currencyCode} - {code.currencyName}
             </option>
           );
         })}
