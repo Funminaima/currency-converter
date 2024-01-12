@@ -10,7 +10,6 @@ interface Props {
   convertedAmt: number | undefined;
   handleSelectedToCurrency: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   history: IHistory[];
-  onChangeConvertedAmount: (e: any) => void;
 }
 const Converter = ({
   supportedCodes,
@@ -20,11 +19,11 @@ const Converter = ({
   convertedAmt,
   handleSelectedToCurrency,
   history,
-  onChangeConvertedAmount,
 }: Props) => {
   return (
     <main className="container">
       <div className="card">
+        <h1 className="title">Currency Converter </h1>
         <section className="first-section">
           <form action="">
             <div className="d-flex">
@@ -60,16 +59,17 @@ const Converter = ({
                   id="amt2"
                   defaultValue={convertedAmt}
                   readOnly
-                  onChange={() => console.log("hello")}
                 />
               </div>
             </div>
           </form>
         </section>
-        <section>
-          <h3>Conversion History</h3>
-          <ConvertedCurrencyHistory history={history} />
-        </section>
+        {history.length !== 0 && (
+          <section className="second-section">
+            <h3>Conversion History</h3>
+            <ConvertedCurrencyHistory history={history} />
+          </section>
+        )}
       </div>
     </main>
   );
