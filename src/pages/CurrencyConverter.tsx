@@ -96,7 +96,7 @@ const CurrencyConverter = () => {
       const convertedAmount =
         (parseFloat(amt) / exchangeRates[fromCurrency]) *
         exchangeRates[ToCurrency];
-      setConvertedAmt(convertedAmount);
+      setConvertedAmt(parseFloat(convertedAmount.toFixed(2)));
     }
   };
 
